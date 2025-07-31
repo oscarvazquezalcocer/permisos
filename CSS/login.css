@@ -1,0 +1,151 @@
+body {
+    font-family:sans-serif;
+    font-weight: normal;
+    font-size: 100%;
+    color: #FFFFFF;
+    margin: 0;
+    background-image: linear-gradient(-225deg, #E3FDF5 0%, #363635 100%);
+    background-image: linear-gradient(to top, #add8d6 0%, #363636 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+.cuadrado {
+    width: 100%;
+    height: 80px;  
+    position: absolute;
+    display:flex;
+    justify-content:center;
+    background: linear-gradient(180deg, #0D083B, #1775D6);
+
+}
+
+.log1 {
+    left: 20px;
+    width: auto;
+    height: 70px;  
+    position: absolute;
+    display: flex;
+    align-items: center;    
+}
+
+#contenedor {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position: relative;
+    right: 60px;
+    top:130px;
+    width: 100%;
+    height: 100%;
+}
+
+#central {
+    max-width: 300px;
+    width: 100%;
+}
+
+.log2 {
+    width: 400px;
+    height: 100px;
+    position: relative;
+    right: 40px;
+    border-radius: 18px;
+    
+}
+
+.titulo {
+    font-family: poppins;
+    font-size: 200%;
+    color:#141414;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#login {
+    position: relative;
+    width: 120%;
+    height: 100%;
+    justify-content: center;
+    padding: 10px 40px;
+    background-color: #FFFFFF;
+    box-shadow: 5px 5px 5px #aca9a9b4;
+    border-radius: 30px 30px; 
+    
+    
+}
+
+#login input {
+    font-family: 'Overpass', sans-serif;
+    font-size: 110%;
+    color: #080808;
+    background-color: #DDDDDD;
+    display: block;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 10px;
+    padding: 5px 5px 5px 30px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 10px 10px 
+ 
+}
+
+#login input::placeholder {
+    font-family: 'Overpass', sans-serif;
+    color: #202020;
+}
+
+#login button {
+    font-family: 'Overpass', sans-serif;
+    font-size: 110%;
+    color:#1b262c;
+    width: 100%;
+    height: 40px;
+    border: none;
+    
+    border-radius: 12px 12px;
+    
+    background-color: #004aad;
+    color:#f3f2f2;
+    margin-top: 10px;
+}
+
+#login button:hover {
+    background-color: #1d9bf0;
+    color:#080808;
+}
+
+.pie-form {
+    font-size: 90%;
+    text-align: center;    
+    margin-top: 15px;
+}
+
+.pie-form a {
+    display: block;
+    text-decoration: none;
+    color: #020202;
+    margin-bottom: 3px;
+}
+
+.pie-form a:hover {
+    color: #0a96f3;
+}
+
+.inferior {
+    margin-top: 10px;
+    font-size: 90%;
+    text-align: center;
+}
+
+.inferior a {
+    display: block;
+    text-decoration: none;
+    color: #bbe1fa;
+    margin-bottom: 3px;
+}
+
+.inferior a:hover {
+    color: #3282b8;
+}

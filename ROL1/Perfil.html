@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="../CSS/Inicio.css">
+    <link rel="stylesheet" href="../CSS/Normalize.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+
+    
+
+    <title>Perfil</title>
+</head>
+
+<body id="texto-normal">
+
+    <header id="barra" class="text-white">
+      <!-- Barra donde estan los logos y el titulo del sistema -->
+      GESTOR DE PERMISOS WEB (GPW)
+      <img src="../IMG/LogoTecNMBlanco.png" class="log1">
+      <img src="../IMG/LogIts.png" class="log2">
+      <img src="../IMG/Logo.png" class="log3">
+      <div class="rectangulo1"></div>
+      <div class="rectangulo2"></div>
+    </header>
+  
+    <nav class="menu" id="texto-normal">
+      <!-- Menu Desplegable -->
+      <ul>
+        <li class="nivel1"><a href="Inicio.php" class="nivel1"><span class="glyphicon glyphicon-home"></span> &nbsp Inicio</a></li>
+        <li class="nivel1"><a href="#" class="nivel1">Solicitar</a>
+          <ul class="nivel2">
+            <li><a href="Permiso.html">Permiso</a></li>
+            <li><a href="Justificacion.html">Justificacion Médica</a></li>
+            <li><a href="Horario.html">Cambio de Horario</a></li>
+          </ul>
+        </li>
+        <li class="nivel1"><a href="Historial.php" class="nivel1">Historial</a></li>
+        <li class="nivel1"><a href="#" class="nivel1" id="hov"> Cuenta</a>
+          <ul class="nivel2">
+            <li><a href="Perfil.html">Configurar Perfil</a></li>
+            <li><a>
+              <form action="../DB/logout.php" method="POST">
+                <button type="submit" class="btn btn-secondary">
+                    <span class="glyphicon glyphicon-log-out"></span> &nbsp;
+                    Cerrar Sesión
+                </button>
+              </form>
+            </a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    
+    <section class="center-container">
+            <div>
+                <h2>Configuración de Perfil</h2>
+                <hr class="border border-primary border-3 opacity-75">
+            </div>
+            <br>
+            <br> 
+            <div id="texto-izquierda" class="container">
+            <form class="form-label">
+
+                <div class="row">
+                  <div class="col">
+                    <label for="nombre" >NOMBRE(S)</label>
+                    <input class="form-control form-control-lg" type="text" placeholder="Ej. Angel Eduardo"  id="miSelect" aria-label=".form-control-lg example">
+                  </div>
+                  <div class="col">
+                    <label for="apellido" >APELLIDO(S)</label>
+                    <input class="form-control form-control-lg" type="text" placeholder="Ej. Gutierres Aguilar" id="miSelect2" aria-label=".form-control-lg example"> 
+                  </div>
+                </div>
+
+                <div>
+                  <br>
+                    <label for="sexo">SEXO</label>
+                    <select id="miSelect3" class="form-select form-select-lg mb-3">
+                        <option value=""></option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                    </select>
+                </div>
+    
+                <div>
+                    <label for="puesto">PUESTO</label>
+                    <select id="miSelect4" class="form-select form-select-lg mb-3" >
+                        <option value=""></option>
+                        <option value="docente">Docente</option>
+                        <option value="administrativo">Admistrativo</option>
+                        <option value="personal">Personal</option>
+                    </select>
+                </div>
+    
+                <div>
+                    <label for="area">AREA DE ADSCRIPCIÓN</label>
+                    <select id="miSelect5" class="form-select form-select-lg mb-3">
+                        <option value=""></option>
+                        <option value="sistemas">Ingenieria En Sistemas Computacionales</option>
+                        <option value="administracion">Ingenieria En Administracion</option>
+                        <option value="industrial">Ingenieria Industrial</option>
+                        <option value="ambiental">Ingenieria Ambiental</option>
+                        <option value="civil">Ingenieria Civil</option>
+                        <option value="gestion Empresarial">Ingenieria En Gestion Empresarial</option>
+                        <option value="gestion Empresarial">Jefe de Departamento de Carreras Profesionales</option>
+                        <option value="gestion Empresarial">Jefe de Departamento de Recursos Humanos</option>
+                        <option value="intendente">Intendente</option>
+                    </select>
+                </div>
+
+                <div id="texto-centrar">
+                    <input type="submit" title="Guardar Cambios" value="Guardar" class="btn btn-primary">
+                </div>
+            </form>
+            </div>
+    </section>
+
+    <script src="JS/perfil.js"></script>
+
+        <footer class="sfooter">
+            <div id="texto-centrar" class="text-white">
+              <h3>Gestor de Permisos Web</h3>
+            </div>
+        </footer>    
+
+</body>
+
+</html>
