@@ -87,7 +87,7 @@ session_start();
           JOIN estado ON solicitud.Estado_ID = estado.ID
           JOIN usuario ON solicitud.User_ID = usuario.id
           WHERE solicitud.Estado_ID IN (33, 34)
-          AND usuario.area_usuario_id = $area_usuario_id";
+          AND usuario.area_usuario_id = '$area_usuario_id'";
 
           $result = $MySQLiconn->query($query);
 
