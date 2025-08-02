@@ -141,7 +141,7 @@ include_once '../DB/Db.php';
                 <div class="campo">
                     <label class="campo__label" for="otroM">Otro: </label>
                     <textarea class="campo__field campo__field--textarea" placeholder="Escribe otro motivo" id="otroM"
-                        name="otroM" disabled></textarea>
+                        name="otroM" disabled rows="2"></textarea>
                 </div>
 
                 <div class="campo">
