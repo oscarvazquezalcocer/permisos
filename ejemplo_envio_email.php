@@ -20,25 +20,14 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+include_once 'SMTP/serverMail.php';
+
 // Función para enviar correo
 function enviarCorreo($destinatario, $asunto, $contenido) {
     try {
-        //  Instancia de PHPMailer
-        $mail = new PHPMailer(true); // true habilita excepciones
-        
-        // Configuración del servidor SMTP
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; // Dirección del servidor SMTP utilizado; en este caso GMAIL
-        $mail->Port = 587; // Puerto del servidor SMTP
-        $mail->SMTPAuth = true;
-        $mail->Username = 'permisos@valladolid.tecnm.mx'; // Correo electronico administrador
-        $mail->Password = 'hjm7mDN>PR>69hV<'; // Contraseña
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Habilitar encriptación TLS
-        $mail->CharSet = 'UTF-8'; // Establecer codificación
-
-        // Remitente
-        $mail->setFrom('permisos@valladolid.tecnm.mx', 'GESTOR DE PERMISOS WEB');
+        // Obtener la configuración base de PHPMailer
+        // Esta función debe estar definida en el archivo SMTP/serverMail.php
+        $mail = Mailer();
         
         // Destinatario
         $mail->addAddress($destinatario);

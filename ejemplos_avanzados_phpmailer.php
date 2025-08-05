@@ -7,9 +7,15 @@
  */
 
 // Importar las clases necesarias (asumiendo que tienes el autoloader de Composer o las includes manuales)
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+
+include_once 'SMTP/serverMail.php';
 
 /**
  * Configuración base para todos los correos
@@ -17,21 +23,7 @@ use PHPMailer\PHPMailer\Exception;
  * @return PHPMailer Instancia configurada de PHPMailer
  */
 function obtenerConfiguracionBase() {
-    $mail = new PHPMailer(true);
-    
-    // Configuración del servidor
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
-    $mail->Port = 587;
-    $mail->SMTPAuth = true;
-    $mail->Username = 'permisos@valladolid.tecnm.mx';
-    $mail->Password = 'hjm7mDN>PR>69hV<';
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->CharSet = 'UTF-8';
-    
-    // Configuración del remitente
-    $mail->setFrom('permisos@valladolid.tecnm.mx', 'GESTOR DE PERMISOS WEB');
-    
+    $mail = Mailer();
     return $mail;
 }
 
@@ -44,7 +36,7 @@ function obtenerConfiguracionBase() {
  * @param array $datos Datos para reemplazar en la plantilla
  * @return array Resultado del envío
  */
-function enviarCorreoConPlantilla($destinatario, $asunto, $rutaPlantilla, $datos = []) {
+function enviarCorreoConHtml($destinatario, $asunto, $rutaPlantilla, $datos = []) {
     try {
         $mail = obtenerConfiguracionBase();
         
@@ -187,7 +179,7 @@ function enviarCorreoRestablecerContrasena($email, $token) {
     </html>
     ";
     
-    return enviarCorreoConPlantilla($email, "Restablecimiento de contraseña", "", ['mensaje' => $mensaje]);
+    return enviarCorreoConHtml($email, "Restablecimiento de contraseña", "", ['mensaje' => $mensaje]);
 }
 
 /**
@@ -195,7 +187,7 @@ function enviarCorreoRestablecerContrasena($email, $token) {
  */
 function ejemploDeUso() {
     // Ejemplo 1: Envío de correo simple
-    $resultado1 = enviarCorreoConPlantilla(
+    $resultado1 = enviarCorreoConHtml(
         'tu.correo@ejemplo.com',
         'Prueba de correo con plantilla',
         'plantillas/correo.html',
