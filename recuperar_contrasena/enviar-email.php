@@ -1,7 +1,16 @@
 <?php
+session_start();
 header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
+
+// Recuperar el resultado de la sesion 
+$resultado = null;
+if (isset($_SESSION['resultado_email'])) {
+    $resultado = $_SESSION['resultado_email'];
+    unset($_SESSION['resultado_email']);
+}
+
 ?>
 <!doctype html>
 <html lang="es">
@@ -69,8 +78,20 @@ header("Expires: 0");
                         Recuperación de Contraseña
                     </h1>
                 </div>
-                    
-                <span class="text-gray-800 text-sm">Ingrese su correo electrónico para la recuperación de contraseña</span>
+
+                <!-- mensaje status de envio de email -->
+                <?php if (isset($resultado)): ?>
+                    <div class="<?php echo $resultado['exito'] 
+                        ? 'bg-green-100 border border-green-400 text-green-700' 
+                        : 'bg-red-100 border border-red-400 text-red-700'; ?> px-4 py-2 rounded-md mb-4 text-center font-medium transition-all duration-300">
+                        <?php echo htmlspecialchars($resultado['mensaje'], ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
+                <?php endif; ?>
+
+                <span class="text-gray-800 text-sm">
+                    Ingrese su correo electrónico para la recuperación de contraseña, 
+                    enviaremos un enlace con instrucciones para restablecer su contraseña.
+                </span>
 
                 <!-- Formulario -->
                 <form id="loginform" action="../DB/reset_token.php" method="POST" class="space-y-4 mt-4">

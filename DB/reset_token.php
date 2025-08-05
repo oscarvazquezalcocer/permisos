@@ -1,13 +1,30 @@
 <?php
 
+session_start();
+
 // Backend para la recuperación de contraseña por medio de un enlace enviado al correo electrónico del usuario.
 // con un token único que expira en una hora junto con el email del usuario.
+require '../PHPMailer/src/Exception.php';
+require '../PHPMailer/src/PHPMailer.php';
+require '../PHPMailer/src/SMTP.php';
+
+// Importar las clases necesarias
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 include_once 'Db.php';
+include_once __DIR__ . '/../SMTP/serverMail.php';
 
-// base url
-define('BASE_URL', 'http://permisos.test/recuperar_contrasena/');
+// Leer APP_URL desde el archivo .env y construir la BASE_URL
+$env = parse_ini_file(__DIR__ . '/../.env');
+$appUrl = isset($env['APP_URL']) ? rtrim($env['APP_URL'], '/') : '';
+define('BASE_URL', $appUrl . '/recuperar_contrasena/');
 
-// datos a recibir, email
+
+// ------------------------------------------------------------------------------------ //
+// Script para manejar la solicitud de recuperación de contraseña
+// ------------------------------------------------------------------------------------ //
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // obtener el email del formulario
     $email = $MySQLiconn->real_escape_string($_POST['email']);
@@ -18,12 +35,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // si el email no existe, mostrar un mensaje de error
     if ($user->num_rows !== 1) {
+        $_SESSION['resultado_email'] = [
+            'exito' => false,
+            'mensaje' => 'El correo electrónico no está registrado.'
+        ];
+
         echo '
             <script>
-                alert("El correo electrónico ingresado no está registrado."); 
-                window.location.href = "../index.php";
+                window.location.href = "../recuperar_contrasena/enviar-email.php";
             </script>';
-        exit();
+
+            exit();
     }
     
     // si el email existe, crear un enlace de recuperación
@@ -31,12 +53,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if ($resetLink !== null) {
         // enviar el enlace de recuperación por correo electrónico
-        // Aquí implementar la lógica para enviar el correo electrónico
-
+        $mailer = Mailer();
+        $plantillaPath = __DIR__ . '/../plantillas/enlace_nueva_contrasena.html';
+        $resultado = enviarCorreoConPlantilla(
+            $mailer, 
+            $email, 
+            'Restablecimiento de contraseña',
+            $plantillaPath, 
+            [
+                'Titulo' => 'Restablecimiento de contraseña',
+                'AppUrl' => BASE_URL,
+                'PasswordUrl' => $resetLink
+            ]
+        );
+        
+         // Guardar resultado en sesión
+        $_SESSION['resultado_email'] = $resultado;
+        
+        // redirigir al formulario de envío
+        echo '
+            <script>
+                window.location.href = "../recuperar_contrasena/enviar-email.php";
+            </script>';
     }
 }
 
-// crear enlace de recuperacion 
+/**
+ * Crea un enlace de recuperación de contraseña y lo almacena en la base de datos.
+ * 
+ * @param string $email Correo electrónico del usuario
+ * @return string|null Enlace de recuperación o null en caso de error
+ */
 function createResetLink($email): ?string
 {
     // generar y almacenar el token de recuperación
@@ -55,24 +102,25 @@ function createResetLink($email): ?string
     $encodedEmail = urlencode($email);
     $resetUrl = BASE_URL . "nueva-contrasena.php?token=" . $token . "&email=" . $encodedEmail;
 
-    // TODO: Mostrar el enlace de recuperación en el mensaje (solo para testeo)
-    echo '
-    <script>
-        alert("Se ha enviado un enlace de recuperación a su correo electrónico. (TEST: ' . $resetUrl . ')"); 
-        window.location.href = "../index.php";
-    </script>';
-
     return $resetUrl;
 }
 
 
-// generar token de recuperacion, almacenarlo y retornarlo
+/**
+ * Crea un token de recuperación de contraseña y lo almacena en la base de datos.
+ * 
+ * @param string $email Correo electrónico del usuario
+ * @return string|null Token de recuperación o null en caso de error
+ */
 function createPasswordResetToken($email): ?string
 {
     global $MySQLiconn;
 
-    // Establecer la zona horaria adecuada
-    date_default_timezone_set('America/Mexico_City');
+    // Obtener la zona horaria desde el archivo .env
+    $env = parse_ini_file(__DIR__ . '/../.env');
+    if (isset($env['APP_TIMEZONE'])) {
+        date_default_timezone_set($env['APP_TIMEZONE']);
+    }
 
     // token aleatorio de 16 bytes
     $token = bin2hex(random_bytes(16));
