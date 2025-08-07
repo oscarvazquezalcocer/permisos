@@ -1,10 +1,24 @@
 <?php
 include_once '../DB/Db.php';
-session_start();
+require_once '../classes/SessionManager.php';
+require_once '../classes/SolicitudManager.php';
+
+// session_start();
 
 header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
+
+// Inicializar el manager de sesión y verificar permisos
+$sessionManager = SessionManager::getInstance($MySQLiconn);
+$sessionManager->requireRole(24); // Solo recursos humanos
+
+
+// Obtener usuario actual
+$usuario = $sessionManager->getUsuario();
+$perfil = $usuario->getPerfil();
+
+$solicitudManager = new SolicitudManager($MySQLiconn, $usuario);
 
 ?>
 
@@ -73,41 +87,15 @@ header("Expires: 0");
     <div class="left-container">
       <h2>Información de Usuario</h2>
       <div>
-        <?php
-
-
-        // Verificar si el nombre de usuario está presente en la sesión
-        if (isset($_SESSION['username'])) {
-          $username = $_SESSION['username'];
-
-          // Realizar una consulta con JOIN para obtener los datos de usuario y perfil
-          $query = "SELECT usuario.username, perfil.nombre, perfil.apellido, perfil.puesto, perfil.area
-                        FROM usuario
-                        JOIN perfil ON usuario.id = perfil.User_ID
-                        WHERE usuario.username = '$username'";
-          $result = $MySQLiconn->query($query);
-
-          if ($result->num_rows == 1) {
-            // Obtener los datos del usuario y perfil desde el resultado de la consulta
-            $row = $result->fetch_assoc();
-            $nombre = $row['nombre'];
-            $apellido = $row['apellido'];
-            $puesto = $row['puesto'];
-            $area = $row['area'];
-
-            // Mostrar los datos del usuario en el HTML
-            echo '<br>';
-            echo '<p><h4><b>Username:</b> ' . $username . '</h4></p>';
-            echo '<p><h4><b>Nombre:</b><br> ' . $nombre . ' ' . $apellido . '</h4></p>';
-            echo '<p><h4><b>Puesto:</b><br> ' . $puesto . '</h4></p>';
-            echo '<p><h4><b>Area de Adscripcion:</b><br> ' . $area . '</h4></p>';
-          } else {
-            echo 'No se encontró un usuario con el nombre de usuario proporcionado';
-          }
-        } else {
-          echo 'Inicie sesión para ver los datos correspondientes';
-        }
-        ?>
+        <?php if ($sessionManager->isLoggedIn()): ?>
+          <br>
+          <p><h4><b>Username:</b> <?php echo htmlspecialchars($usuario->getUsername()); ?></h4></p>
+          <p><h4><b>Nombre:</b><br> <?php echo htmlspecialchars($usuario->getNombreCompleto()); ?></h4></p>
+          <p><h4><b>Puesto:</b><br> <?php echo htmlspecialchars($perfil->getPuesto()); ?></h4></p>
+          <p><h4><b>Area de Adscripcion:</b><br> <?php echo htmlspecialchars($perfil->getArea()); ?></h4></p>
+        <?php else: ?>
+          <p>Error al cargar información del usuario</p>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -115,12 +103,10 @@ header("Expires: 0");
       <h2 class="bolt-lightning">Solicitudes Actuales</h2><br>
       <div class="h4">
 
-        <?php
-        if (isset($_GET['msg'])) {
-          $mensaje = urldecode($_GET['msg']);
-          echo '<div class="alert alert-info">' . $mensaje . '</div>';
-        }
-        ?>
+        <?php if (isset($_GET['msg'])) : ?>
+        <div class="alert alert-info"><?php echo urldecode($_GET['msg']); ?></div>
+        <?php endif; ?>
+        <!-- Tabla de Solicitudes -->
         <br>
         <table class="table table-hover table-bordered table table-light table-striped">
           <tr>
@@ -136,15 +122,15 @@ header("Expires: 0");
           <?php
 
           // Verificar si el nombre de usuario está presente en la sesión
-          if (isset($_SESSION['username'])) {
-            $username = $_SESSION['username'];
+          if ($sessionManager->isLoggedIn()) {
+            // $username = $_SESSION['username'];
 
-            $query = "SELECT solicitud.ID, tipo_solicitud.Tipo_solicitud_nombre, perfil.nombre, perfil.puesto, solicitud.Request_at, solicitud.motivo
-            FROM solicitud
-            JOIN tipo_solicitud ON solicitud.Tipo_solicitud_ID = tipo_solicitud.ID
-            JOIN perfil ON solicitud.User_ID = perfil.User_ID
-            WHERE solicitud.Estado_ID NOT IN (31, 32, 33)";
-            $result = $MySQLiconn->query($query);
+            // $query = "SELECT solicitud.ID, tipo_solicitud.Tipo_solicitud_nombre, perfil.nombre, perfil.puesto, solicitud.Request_at, solicitud.motivo
+            // FROM solicitud
+            // JOIN tipo_solicitud ON solicitud.Tipo_solicitud_ID = tipo_solicitud.ID
+            // JOIN perfil ON solicitud.User_ID = perfil.User_ID
+            // WHERE solicitud.Estado_ID NOT IN (31, 32, 33)";
+            $result = $solicitudManager->obtenerSolicitudesActivasExcepto([31, 32, 33]);
 
             // Verificar si hay resultados
             if ($result->num_rows > 0) {
