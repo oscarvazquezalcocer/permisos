@@ -2,6 +2,34 @@
 header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
+
+// Verificar si ya hay una sesión activa
+session_start();
+if (isset($_SESSION['username'])) {
+    // Redirigir según el rol si ya está logueado
+    $rolID = $_SESSION['rolID'] ?? null;
+    switch ($rolID) {
+        case 23:
+            header("Location: ROL_AD/inicio_Ad.php");
+            break;
+        case 22:
+            header("Location: ROL2/Inicio2.php");
+            break;
+        case 24:
+            header("Location: ROL3/Inicio3.php");
+            break;
+        case 21:
+            header("Location: ROL1/Inicio.php");
+            break;
+        case 25:
+            header("Location: ROL_IN/inicio_inactivo.php");
+            break;
+        default:
+            header("Location: ROL1/Inicio.php");
+            break;
+    }
+    exit();
+}
 ?>
 <!doctype html>
 <html lang="es">
@@ -12,8 +40,8 @@ header("Expires: 0");
     <meta name="description" content="Accede al Gestor de Permisos Web del TecNM. Ingresa tus credenciales para continuar.">
     
     <!-- Tailwind CSS v4 Play CDN -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <link rel="stylesheet" href="../CSS/tailwindcss.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <link rel="stylesheet" href="../CSS/tailwindcss.css"> -->
     
     <!-- Google Fonts - Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Overpass:wght@400;500&display=swap" rel="stylesheet">
@@ -67,8 +95,15 @@ header("Expires: 0");
                 <div class="text-center mb-6">
                     <h1 class="poppins text-2xl font-medium text-gray-800">Bienvenido</h1>
                 </div>
+
+                 <!-- Mostrar mensaje de error/éxito -->
+                <?php if (isset($_GET['mensaje'])): ?>
+                    <div class="mb-4 p-3 rounded-lg <?php echo strpos($_GET['mensaje'], 'Error') !== false || strpos($_GET['mensaje'], 'incorrectos') !== false ? 'bg-red-100 text-red-700 border border-red-300' : 'bg-green-100 text-green-700 border border-green-300'; ?>">
+                        <?php echo htmlspecialchars($_GET['mensaje'], ENT_QUOTES, 'UTF-8'); ?>
+                    </div>
+                <?php endif; ?>
                 
-                <!-- Formulario -->
+                  <!-- Formulario -->
                 <form id="loginform" action="DB/Login_C.php" method="POST" class="space-y-4">
                     
                     <!-- Campo Usuario -->
@@ -79,23 +114,26 @@ header("Expires: 0");
                         <input 
                             type="text" 
                             name="username" 
+                            id="username"
                             placeholder="Usuario" 
                             required
+                            maxlength="50"
                             class="w-full h-12 px-6 bg-gray-200 text-gray-800 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600 text-lg"
                         >
                     </div>
                     
                     <!-- Campo Contraseña -->
                     <div class="relative">
-                        <label for="username" class="block text-gray-700 font-medium mb-2">
+                        <label for="password" class="block text-gray-700 font-medium mb-2">
                             Contraseña
                         </label>
                         <input 
                             type="password" 
                             name="password" 
                             id="password" 
-                            placeholder="123abc" 
+                            placeholder="••••••••" 
                             required
+                            maxlength="255"
                             class="w-full h-12 px-6 pr-12 bg-gray-200 text-gray-800 rounded-xl border-none outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600 text-lg"
                         >
                     </div>
@@ -114,10 +152,13 @@ header("Expires: 0");
                     <div class="pt-2">
                         <button 
                             type="submit" 
-                            name="Login"
-                            class="w-full h-12 bg-blue-700 hover:bg-blue-500 text-white font-medium text-lg rounded-xl transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            name="login"
+                            value="1"
+                            id="loginBtn"
+                            class="w-full h-12 bg-blue-700 hover:bg-blue-500 text-white font-medium text-lg rounded-xl transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Iniciar Sesion
+                            <span id="loginText">Iniciar Sesión</span>
+                            <span id="loadingText" class="hidden">Cargando...</span>
                         </button>
                     </div>
                 </form>
@@ -135,13 +176,29 @@ header("Expires: 0");
         </div>
     </div>
 
+    <script>
+        // Mejorar UX del formulario
+        document.getElementById('loginform').addEventListener('submit', function(e) {
+            const btn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loadingText = document.getElementById('loadingText');
+            
+            btn.disabled = true;
+            loginText.classList.add('hidden');
+            loadingText.classList.remove('hidden');
+        });
+
+        // Auto-focus en el campo username
+        document.getElementById('username').focus();
+    </script>
+
     <!-- Manejo de mensajes PHP -->
-    <?php
+    <!-- <?php
     if (isset($_GET['mensaje'])) {
         $mensaje = $_GET['mensaje'];
         echo "<script>alert('" . htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') . "');</script>";
     }
-    ?>
+    ?> -->
     
 </body>
 </html>
