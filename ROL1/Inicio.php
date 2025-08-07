@@ -1,10 +1,23 @@
 <?php
 session_start();
 include_once '../DB/Db.php';
+require_once '../classes/SessionManager.php';
+require_once '../classes/SolicitudManager.php';
 
 header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
 header("Expires: 0");
+
+// Inicializar el manager de sesión y verificar permisos
+$sessionManager = SessionManager::getInstance($MySQLiconn);
+$sessionManager->requireRole(21); // Solo personal
+
+// Obtener usuario actual
+$usuario = $sessionManager->getUsuario();
+$perfil = $usuario->getPerfil();
+
+// Instancia solicitud manager
+$solicitudManager = new SolicitudManager($MySQLiconn, $usuario);
 
 ?>
 
@@ -76,43 +89,17 @@ header("Expires: 0");
       <h4>Información de Usuario</h4>
       <img src="../IMG/person-lines-fill.svg">
       <div>
-        <?php
+        <?php if ($sessionManager->isLoggedIn()): ?>
+          <br>
+          <p><h6><b>Username:</b> <?php echo htmlspecialchars($usuario->getUsername()); ?></h6></p>
+          <p><h6><b>Nombre:</b><br> <?php echo htmlspecialchars($usuario->getNombreCompleto()); ?></h6></p>
+          <p><h6><b>Puesto:</b><br> <?php echo htmlspecialchars($perfil->getPuesto()); ?></h6></p>
+          <p><h6><b>Area de Adscripcion:</b><br> <?php echo htmlspecialchars($perfil->getArea()); ?></h6></p>
+          <p><h6><b>Jefe Directo:</b><br> <?php echo htmlspecialchars($usuario->getAreaUsuarioNombre()); ?></h6></p>
+        <?php else: ?>
+          <p>Error al cargar información del usuario, inicie sesión para ver los datos correspondientes.</p>
+        <?php endif; ?>
 
-        // Verificar si el nombre de usuario está presente en la sesión
-        if (isset($_SESSION['username'])) {
-          $username = $_SESSION['username'];
-
-          // Realizar una consulta con JOIN para obtener los datos de usuario y perfil
-          $query = "SELECT usuario.username, perfil.nombre, perfil.apellido, perfil.puesto, perfil.area, area_usuario.area_usuario_nombre
-                        FROM usuario
-                        JOIN perfil ON usuario.id = perfil.User_ID
-                        JOIN area_usuario ON usuario.area_usuario_id = area_usuario.ID
-                        WHERE usuario.username = '$username'";
-          $result = $MySQLiconn->query($query);
-
-          if ($result->num_rows == 1) {
-            // Obtener los datos del usuario y perfil desde el resultado de la consulta
-            $row = $result->fetch_assoc();
-            $nombre = $row['nombre'];
-            $apellido = $row['apellido'];
-            $puesto = $row['puesto'];
-            $area = $row['area'];
-            $area_usuario = $row['area_usuario_nombre'];
-
-            // Mostrar los datos del usuario en el HTML
-            echo '<br>';
-            echo '<p><h6><b>Username:</b> ' . $username . '</h6></p>';
-            echo '<p><h6><b>Nombre:</b><br> ' . $nombre . ' ' . $apellido . '</h6></p>';
-            echo '<p><h6><b>Puesto:</b><br> ' . $puesto . '</h6></p>';
-            echo '<p><h6><b>Area de Adscripcion:</b><br> ' . $area . '</h6></p>';
-            echo '<p><h6><b>Jefe Directo:</b><br> ' . $area_usuario . '</h6></p>';
-          } else {
-            echo 'No se encontró un usuario con el nombre de usuario proporcionado';
-          }
-        } else {
-          echo 'Inicie sesión para ver los datos correspondientes';
-        }
-        ?>
       </div>
     </div>
 
