@@ -21,8 +21,8 @@ if (isset($_SESSION['resultado_email'])) {
     <meta name="description" content="Restablece tu contraseña de forma segura y rápida. Ingresa tu correo electrónico para recibir un enlace de restablecimiento.">
     
     <!-- Tailwind CSS v4 Play CDN -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <link rel="stylesheet" href="../CSS/tailwindcss.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <link rel="stylesheet" href="../CSS/tailwindcss.css"> -->
     
     <!-- Google Fonts - Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Overpass:wght@400;500&display=swap" rel="stylesheet">
@@ -94,7 +94,7 @@ if (isset($_SESSION['resultado_email'])) {
                 </span>
 
                 <!-- Formulario -->
-                <form id="loginform" action="../DB/reset_token.php" method="POST" class="space-y-4 mt-4">
+                <form id="mailform" action="../DB/reset_token.php" method="POST" class="space-y-4 mt-4">
                     
                     <!-- Campo Usuario -->
                     <div>
@@ -116,9 +116,11 @@ if (isset($_SESSION['resultado_email'])) {
                         <button 
                             type="submit" 
                             name="Login"
-                            class="w-full h-12 bg-blue-700 hover:bg-blue-500 text-white font-medium text-lg rounded-xl transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            id="enviarBtn"
+                            class="w-full h-12 bg-blue-700 hover:bg-blue-500 text-white font-medium text-lg rounded-xl transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Recuperar Contraseña
+                            <span id="loginText">Recuperar contraseña</span>
+                            <span id="loadingText" class="hidden">Enviando...</span>
                         </button>
                     </div>
                 </form>
@@ -135,6 +137,21 @@ if (isset($_SESSION['resultado_email'])) {
             </div>
         </div>
     </div>
+    <script>
+        // Mejorar UX del formulario
+        document.getElementById('mailform').addEventListener('submit', function(e) {
+            const btn = document.getElementById('enviarBtn');
+            const loginText = document.getElementById('loginText');
+            const loadingText = document.getElementById('loadingText');
+            
+            btn.disabled = true;
+            loginText.classList.add('hidden');
+            loadingText.classList.remove('hidden');
+        });
+
+        // Auto-focus en el campo username
+        // document.getElementById('username').focus();
+    </script>
 
     <!-- Manejo de mensajes PHP -->
     <?php
