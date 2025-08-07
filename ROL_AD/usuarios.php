@@ -1,6 +1,11 @@
 <?php
-include_once '../DB/Db.php';
 session_start();
+include_once '../DB/Db.php';
+require_once '../classes/SessionManager.php';
+
+// Inicializar el manager de sesión y verificar permisos
+$sessionManager = SessionManager::getInstance($MySQLiconn);
+$sessionManager->requireRole(23); // Solo administradores pueden acceder
 ?>
 
 <!DOCTYPE html>
