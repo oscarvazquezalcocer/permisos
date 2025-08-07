@@ -1,21 +1,17 @@
 <?php
+require_once 'Db.php';
+require_once '../classes/SessionManager.php';
 
-header("Cache-Control: no-cache, no-store, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0");
-
-if (isset($_POST)) {
-session_start();
-
-// Eliminar todas las variables de sesión
-session_unset();
-
-// Destruir la sesión
-session_destroy();
-
-// Redirigir al usuario a la página de inicio de sesión
-header("Location: ../index.php");
-exit();
+try {
+    $sessionManager = SessionManager::getInstance($MySQLiconn);
+    $sessionManager->logout();
+    
+    // Redirigir al index
+    header("Location: ../index.php?mensaje=Sesión cerrada correctamente");
+    exit();
+} catch (Exception $e) {
+    error_log("Error en logout: " . $e->getMessage());
+    header("Location: ../index.php?mensaje=Error al cerrar sesión");
+    exit();
 }
-
 ?>
