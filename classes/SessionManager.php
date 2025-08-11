@@ -158,6 +158,11 @@ class SessionManager {
         }
     }
 
+    /**
+     * Verficar si el usuario tiene un permiso específico
+     * @param string $permission Nombre del permiso a verificar (ej. 'admin', 'jefe', 'rh', 'personal')
+     * @return bool True si tiene el permiso, false en caso contrario
+     */
     public function checkPermission($permission) {
         if (!$this->isLoggedIn()) {
             return false;

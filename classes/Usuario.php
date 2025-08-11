@@ -118,6 +118,15 @@ class Usuario {
         return $row ? $row['area_usuario_nombre'] : '';
     }
 
+    public function getTipoUsuarioNombre() {
+        $stmt = $this->db->prepare("SELECT Tipo_usuario_nombre FROM tipo_usuario WHERE ID = ?");
+        $stmt->bind_param("i", $this->tipoUsuarioID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row ? $row['Tipo_usuario_nombre'] : '';
+    }
+
     public function esAdmin() {
         return $this->rolID == 23;
     }
