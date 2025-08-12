@@ -32,37 +32,36 @@ $description = 'Página de inicio para administradores';
         renderNavbar($navItems, $sessionManager);
     ?>
 
-    <section class="center-container2">
-        <div class="tback">
-            <br>
-            <h2>Información de Usuario</h2>
-            <br>
-            <h3>ADMINISTRADOR</h3>
-            <img id="mg" src="../IMG/user.png" alt="Icono user" width="200" height="200">
-        </div>
-        <div>
-            <?php
-            // Verificar si el nombre de usuario está presente en la sesión
-            if ($sessionManager->isLoggedIn()) {
-                $user = $sessionManager->getUsuario();
-                $username = $user->getUserName();
-                $nombre = $user->getNombreCompleto();
-                $puesto = $user->getPerfil()->getPuesto();
-                $area = $user->getPerfil()->getArea();
+    <section class="container center-container2 my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <img src="../IMG/user.png" alt="Icono user" class="rounded-circle mb-3 border border-3" width="150" height="150">
+                        <h3 class="card-title mb-2 text-primary">ADMINISTRADOR</h3>
+                        <h5 class="mb-4 text-muted">Información de Usuario</h5>
+                        <?php
+                        if ($sessionManager->isLoggedIn()) {
+                            $user = $sessionManager->getUsuario();
+                            $username = $user->getUserName();
+                            $nombre = $user->getNombreCompleto();
+                            $puesto = $user->getPerfil()->getPuesto();
+                            $area = $user->getPerfil()->getArea();
 
-                // Mostrar los datos del usuario en el HTML
-                echo '<br>';
-                echo '<p style="font-family: Arial, sans-serif; font-size: 15px;"><b>Usuario:</b><br> ' . $username . '</p>';
-                echo '<p style="font-family: Arial, sans-serif; font-size: 15px;"><b>Nombre:</b><br> ' . $nombre . '</p>';
-                echo '<p style="font-family: Arial, sans-serif; font-size: 15px;"><b>Puesto:</b><br> ' . $puesto . '</p>';
-                echo '<p style="font-family: Arial, sans-serif; font-size: 15px;"><b>Area de Adscripcion:</b><br> ' . $area . '</p>';
-                
-            } else {
-                echo '<p style="margin-top:48px; font-size: 20px; color: #ff0000;">Inicie sesión para ver los datos correspondientes.</p>';
-            }
-            ?>
+                            echo '<ul class="list-group list-group-flush text-start">';
+                            echo '<li class="list-group-item"><strong>Usuario:</strong> ' . htmlspecialchars($username) . '</li>';
+                            echo '<li class="list-group-item"><strong>Nombre:</strong> ' . htmlspecialchars($nombre) . '</li>';
+                            echo '<li class="list-group-item"><strong>Puesto:</strong> ' . htmlspecialchars($puesto) . '</li>';
+                            echo '<li class="list-group-item"><strong>Área de Adscripción:</strong> ' . htmlspecialchars($area) . '</li>';
+                            echo '</ul>';
+                        } else {
+                            echo '<div class="alert alert-warning mt-4" role="alert">Inicie sesión para ver los datos correspondientes.</div>';
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
         </div>
-
     </section>
 
     <?php include_once __DIR__ . '/../views/partials/footer.php'; ?>
