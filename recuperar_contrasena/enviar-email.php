@@ -45,7 +45,7 @@ if (isset($_SESSION['resultado_email'])) {
     </style>
 </head>
 
-<body class="min-h-screen text-white m-0 bg-gray-300">
+<body class="min-h-screen text-white m-0 bg-[#E7E8F3]">
     
     <!-- Header -->
     <div class="header-gradient w-full h-20 fixed top-0 left-0 flex justify-center items-center z-10">

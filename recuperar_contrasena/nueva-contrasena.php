@@ -12,8 +12,8 @@ header("Expires: 0");
     <meta name="description" content="Restablece tu contraseña de forma segura y rápida. Ingresa una nueva contraseña para continuar con el acceso a tu cuenta.">
     
     <!-- Tailwind CSS v4 Play CDN -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <link rel="stylesheet" href="../CSS/tailwindcss.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <link rel="stylesheet" href="../CSS/tailwindcss.css"> -->
     
     <!-- Google Fonts - Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Overpass:wght@400;500&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@ header("Expires: 0");
     </style>
 </head>
 
-<body class="min-h-screen text-white m-0 bg-gray-300">
+<body class="min-h-screen text-white m-0 bg-[#E7E8F3]">
     
     <!-- Header -->
     <div class="header-gradient w-full h-20 fixed top-0 left-0 flex justify-center items-center z-10">
