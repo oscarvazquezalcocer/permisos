@@ -17,9 +17,9 @@ $description = 'Listado de Perfiles de Datos de Usuarios';
 ?>
 
 <?php include_once __DIR__ . '/../views/partials/head.php'; ?>
+<?php include_once __DIR__ . '/../views/partials/header.php'; ?>
 
 <body>
-    <?php include_once __DIR__ . '/../views/partials/header.php'; ?>
 
 	<?php // Componente de navegacion navbar
     

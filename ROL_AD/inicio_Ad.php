@@ -16,11 +16,10 @@ $title = 'Inicio Administrador';
 $description = 'Página de inicio para administradores';
 ?>
 
-
 <?php include_once __DIR__ . '/../views/partials/head.php'; ?>
+<?php include_once __DIR__ . '/../views/partials/header.php'; ?>
 
 <body id="texto-normal"> 
-    <?php include_once __DIR__ . '/../views/partials/header.php'; ?>
 
     <?php // Componente de navegacion navbar
         $navItems = [
