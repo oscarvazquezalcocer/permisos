@@ -1,6 +1,6 @@
 <!-- Header con logo y título usando flexbox de Bootstrap 5 -->
     <header id="barrasuperior" class="text-white p-3 fixed-top" style="background: linear-gradient(180deg, #0D083B, #1775D6);">
-        <div class="container-fluid">
+        <div class="container-sm">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h5 mb-0">GESTOR DE PERMISOS</h1>
