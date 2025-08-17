@@ -225,9 +225,10 @@ body {
 }
 
 .campo__field--textarea {
-    width: 100%;
-    height: 3rem;
+    /* width: 100%; */
+    /* height: 3rem; */
     padding: 10px;
+    resize: none;
 }
 
 .boton--primario {

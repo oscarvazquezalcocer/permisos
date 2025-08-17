@@ -1,142 +1,149 @@
 <?php
 session_start();
 include_once '../DB/Db.php';
+require_once '../classes/SessionManager.php';
+require_once '../classes/SolicitudManager.php';
+require_once '../views/components/navbar.php';
+
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+// Inicializar el manager de sesión y verificar permisos
+$sessionManager = SessionManager::getInstance($MySQLiconn);
+$sessionManager->requireRole(21); // Solo personal
+
+// Obtener usuario actual
+$usuario = $sessionManager->getUsuario();
+
+// ------ navbar componente ------
+$navItems = [
+    [
+        'label' => 'Inicio',
+        'href' => 'Inicio.php',
+        'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
+                <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
+                </svg>',
+    ],
+    [
+        'label' => 'Solicitar',
+        'href' => '#',
+        'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 0 1 3.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 0 1 3.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 0 1-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875Zm6.905 9.97a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72V18a.75.75 0 0 0 1.5 0v-4.19l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z" clip-rule="evenodd" />
+                <path d="M14.25 5.25a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963A5.23 5.23 0 0 0 16.5 7.5h-1.875a.375.375 0 0 1-.375-.375V5.25Z" />
+                </svg>',
+        'dropdown' => [
+            ['label' => 'Permiso', 'href' => 'Permiso.php'],
+            ['label' => 'Justificación Médica', 'href' => 'Justificacion.php'],
+            ['label' => 'Cambio de Horario', 'href' => 'horario.php']
+        ]
+    ],
+    ['label' => 'Historial', 'href' => 'historial.php', 'active' => true],
+];
+
+$title = 'Historial Personal';
+$description = 'Página de historial de solicitudes para personal';
+
 ?>
 
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-  <meta charset="utf-8">
-  <title> Historial </title>
-  <!-- Responsividad -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Link hacia los archivos de Bootstrap -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <!-- Link hacia el archivo de estilos css -->
-  <link rel="stylesheet" href="../CSS/Inicio.css">
-  <link rel="stylesheet" href="../CSS/Normalize.css">
-  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../assets/js/bootstrap.min.js">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="icon" href="IMG/logIts.png" type="image/png">
-</head>
+<?php include_once __DIR__ . '/../views/partials/head.php'; ?>
 
 <body id="texto-normal">
 
-  <header id="barra" class="text-white">
-    <!-- Barra donde estan los logos y el titulo del sistema -->
-    GESTOR DE PERMISOS WEB (GPW)
-    <img src="../IMG/LogoTecNMBlanco.png" class="log1">
-    <img src="../IMG/LogIts.png" class="log2">
-    <img src="../IMG/Logo.png" class="log3">
-    <div class="rectangulo1"></div>
-    <div class="rectangulo2"></div>
-  </header>
+    <?php include_once __DIR__ . '/../views/partials/header.php'; ?>
 
-  <nav class="menu" id="texto-normal">
-    <!-- Menu Desplegable -->
-    <ul>
-      <li class="nivel1"><a href="Inicio.php" class="nivel1"><span class="glyphicon glyphicon-home"></span> &nbsp Inicio</a></li>
-      <li class="nivel1"><a href="#" class="nivel1">Solicitar</a>
-        <ul class="nivel2">
-          <li><a href="Permiso.php">Permiso</a></li>
-          <li><a href="Justificacion.php">Justificacion Médica</a></li>
-          <li><a href="horario.php">Cambio de Horario</a></li>
-        </ul>
-      </li>
-      <li class="nivel1"><a href="historial.php" class="nivel1" id="hov">Historial</a></li>
-      <li class="nivel1"><a href="#" class="nivel1">Cuenta</a>
-        <ul class="nivel2">
-          <li><a>
-            <form action="../DB/logout.php" method="POST">
-                <button type="submit" style="font-size: 15px; background-color: black; border:none;" class="btn btn-secondary">
-                  <span class="glyphicon glyphicon-log-out"></span> &nbsp;
-                  Cerrar Sesión
-                </button>
-            </form>
-          </a></li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
-  
-  <section class="center-container" id="texto-centrar">
-              <h1 class="bolt-lightning">Historial de Solicitudes</h1>
-      <br><br>
-      <div id="items-centrados">
-        <div class="h4">
-          <table class="table table-light table-striped">
-          <tr>
-            <td><strong>ID</strong></td>
-            <td><strong>TIPO PERMISO</strong></td>
-            <td><strong>FECHA</strong></td>
-            <td><strong>MOTIVO</strong></td>
-            <td><strong>STATUS</strong></td>
-            <td><strong>ACCIONES</strong></td>
-          </tr>
-          <?php
-        
 
-        // Verificar si el nombre de usuario está presente en la sesión
-        if (isset($_SESSION['username'])) {
-          $username = $_SESSION['username'];
+    <?php // Componente de navegacion navbar
+    renderNavbar($navItems, $sessionManager);
+    ?>
 
-          // Crear la consulta SQL para obtener las solicitudes del usuario
-          $query = "SELECT solicitud.ID, tipo_solicitud.Tipo_solicitud_nombre, solicitud.Request_at, estado.Estado_nombre, solicitud.motivo
-                    FROM solicitud
-                    JOIN tipo_solicitud ON solicitud.Tipo_solicitud_ID = tipo_solicitud.ID
-                    JOIN estado ON solicitud.Estado_ID = estado.ID
-                    JOIN usuario ON solicitud.User_ID = usuario.id
-                    WHERE usuario.username = '$username' AND solicitud.Estado_ID NOT IN (31, 34)";
-          $result = $MySQLiconn->query($query);
-        
-          // Verificar si hay resultados
-          if ($result->num_rows > 0) {
-            // Iterar sobre los resultados y generar las filas de la tabla
-            while ($row = $result->fetch_assoc()) {
-                $solicitudID = $row['ID'];
-                $tipoSolicitudNombre = $row['Tipo_solicitud_nombre'];
-                $requestAt = $row['Request_at'];
-                $motivo = $row['motivo'];
-                $estadoNombre = $row['Estado_nombre'];
+    <section class="container-xxl" style="margin-top: 12.8rem;">
+        <h2 class="bolt-lightning">Historial de Solicitudes</h2>
+        <br><br>
+        <div class="container-fluid">
+            <div class="table-responsive">
+                <table id="permisos" class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>TIPO PERMISO</th>
+                            <th>FECHA</th>
+                            <th>MOTIVO</th>
+                            <th>STATUS</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
 
-                // Generar una fila de la tabla con los datos de la solicitud
-                echo '<tr>';
-                echo '<td>' . $solicitudID . '</td>';
-                echo '<td>' . $tipoSolicitudNombre . '</td>';
-                echo '<td>' . $requestAt . '</td>';
-                echo '<td>' . $motivo . '</td>';
-                echo '<td>' . $estadoNombre . '</td>';
-                echo '<td><a  href="view.php?id=' . $solicitudID . '" class="btn btn-info btn-lg">
-                <span class="glyphicon glyphicon-eye-open"></span> Ver mas..
-                </a>
-                </td>';
-                echo '</tr>';
-            }
-        } else {
-            // No se encontraron solicitudes en la tabla
-            echo '</table>';
-            echo '<div>';
-            echo '<br>';
-            echo '<strong>No hay solicitudes finalizadas actualmente !!!</strong>';
-            echo '</div>';
-          }
-        } else {
-            echo 'El nombre de usuario no está presente en la sesión';
-        }
-        ?>
-        </table>
-        </div>
-  </section>
+                        // Verificar si el nombre de usuario está presente en la sesión
+                        if ($sessionManager->isLoggedIn()) {
+                            $username = $usuario->getUserName();
 
-  <footer class="sfooter">
-    <div id="texto-centrar" class="text-white">
-      <h4>@ Gestor de Permisos Web</h4>
-    </div>
-  </footer>
+                            // Crear la consulta SQL para obtener las solicitudes del usuario
+                            $query = "SELECT solicitud.ID, tipo_solicitud.Tipo_solicitud_nombre, solicitud.Request_at, estado.Estado_nombre, solicitud.motivo
+                                    FROM solicitud
+                                    JOIN tipo_solicitud ON solicitud.Tipo_solicitud_ID = tipo_solicitud.ID
+                                    JOIN estado ON solicitud.Estado_ID = estado.ID
+                                    JOIN usuario ON solicitud.User_ID = usuario.id
+                                    WHERE usuario.username = '$username' AND solicitud.Estado_ID NOT IN (31, 34)";
+                            
+                            $result = $MySQLiconn->query($query);
 
+                            // Verificar si hay resultados
+                            if ($result->num_rows > 0) {
+                                // Iterar sobre los resultados y generar las filas de la tabla
+                                while ($row = $result->fetch_assoc()) {
+                                    $solicitudID = $row['ID'];
+                                    $tipoSolicitudNombre = $row['Tipo_solicitud_nombre'];
+                                    $requestAt = $row['Request_at'];
+                                    $motivo = $row['motivo'];
+                                    $estadoNombre = $row['Estado_nombre'];
+                            ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($solicitudID); ?></td>
+                                        <td><?php echo htmlspecialchars($tipoSolicitudNombre); ?></td>
+                                        <td><?php echo htmlspecialchars($requestAt); ?></td>
+                                        <td><?php echo htmlspecialchars($motivo); ?></td>
+                                        <td><?php echo htmlspecialchars($estadoNombre); ?></td>
+                                        <td>
+                                            <a  href="view.php?id=' . $solicitudID . '" class="btn btn-info btn-lg">
+                                                <span class="glyphicon glyphicon-eye-open"></span> 
+                                                Ver mas..
+                                            </a>
+                                        </td>';
+                                    </tr>
+                            <?php
+                                }
+                            } 
+                        } else {
+                            echo 
+                            '<tr>
+								<td colspan="8" class="text-center text-danger fw-bold">
+									Inicie sesión para ver los datos correspondientes.
+								</td>
+							</tr>';
+                        }
+                        ?>
+                    </thead>
+                </table>
+            </div>
+    </section>
+
+    <?php include_once __DIR__ . '/../views/partials/footer.php'; ?>
+    <script>
+        initDataTable('permisos', {
+            layout: {
+                topStart: 'search',
+                topEnd: 'pageLength',
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            },
+            responsive: true
+        });
+    </script>
 
 </body>
 
