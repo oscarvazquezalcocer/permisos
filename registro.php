@@ -2,54 +2,54 @@
 <html lang="es">
     <head>
         <meta charset="utf-8">
-        
-        <title> Registrate </title>    
+
+        <title> Registrate </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        
+
         <!-- Link hacia el archivo de estilos css -->
         <link rel="stylesheet" href="CSS/Inicio.css">
         <link rel="stylesheet" href="CSS/Normalize.css">
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
-        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <link rel="icon" href="IMG/logIts.png" type="image/png">
     </head>
-    
+
     <body>
-        
-        <header id="barra" class="text-white"> 
-           GESTOR DE PERMISOS WEB (GPW) 
+
+        <header id="barra" class="text-white">
+           GESTOR DE PERMISOS WEB (GPW)
         <img src="IMG/LogoTecNMBlanco.png" class="log1">
         <img src="IMG/LogIts.png" class="log2">
         <img src="IMG/Logo.png" class="log3">
         <div class="rectangulo1"></div>
-        <div class="rectangulo2"></div>       
-        </header>  
+        <div class="rectangulo2"></div>
+        </header>
         <section class="center-container">
         <div id="texto-derecha">
-        <button type="button" class="btn-close" aria-label="Close" onclick="window.location.href = 'Rol_Ad/usuarios.php';"></button>
-        </div>    
+        <button type="button" class="btn-close" aria-label="Close" onclick="window.location.href = 'ROL_AD/usuarios.php';"></button>
+        </div>
         <div>
                 <h2>REGISTRO DE USUARIO</h2>
                 <hr class="border border-primary border-3 opacity-65">
             </div>
-            
+
             <br>
-            <br> 
+            <br>
             <div id="texto-izquierda" class="container">
             <form id="registro-form" class="form-label" action="DB/signup.php" method="Post">
 
                 <div class="row">
                   <div class="col">
                     <label>NOMBRE(S)</label>
-                    <input class="form-control form-control-lg" type="text" placeholder="Ej. Angel Eduardo" name="nombre" aria-label=".form-control-lg example" 
+                    <input class="form-control form-control-lg" type="text" placeholder="Ej. Angel Eduardo" name="nombre" aria-label=".form-control-lg example"
                       required>
                   </div>
                   <div class="col">
                     <label>APELLIDO(S)</label>
-                    <input class="form-control form-control-lg" type="text" placeholder="Ej. Gutierres Aguilar" name="apellido" aria-label=".form-control-lg example" 
+                    <input class="form-control form-control-lg" type="text" placeholder="Ej. Gutierres Aguilar" name="apellido" aria-label=".form-control-lg example"
                     required>
                   </div>
                 </div>
@@ -66,13 +66,13 @@
                       <select class="form-select form-select-lg mb-3" aria-label=".form-control-lg example" name="sexo" required>
                         <option value="">Seleccione una Opción</option>
                         <option value="Masculino">Masculino</option>
-                        <option value="Femenino">Femenino</option>       
+                        <option value="Femenino">Femenino</option>
                     </select>
-                    
+
                     </div>
                   </div>
                   <br>
-    
+
                 <div>
                     <label for="puesto">PUESTO</label>
                     <select class="form-select form-select-lg mb-3" name="puesto" required>
@@ -82,7 +82,7 @@
                         <option value="Personal">Personal</option>
                     </select>
                 </div>
-    
+
                 <div>
                     <label>AREA DE ADSCRIPCIÓN</label>
                     <select class="form-select form-select-lg mb-3" name="area" required>
@@ -99,13 +99,13 @@
                         <option value="Jefe Directo">Jefe Directo-Planeacion y Vinculacion</option>
                         <option value="Jefe Directo">Jefe Directo-Administracion y Finanzas</option>
                         <option value="Intendente">Intendente</option>
-                    </select>   
+                    </select>
                 </div>
                 <br>
 
                 <div>
                    <label>NOMBRE DE USUARIO</label>
-                   <input class="form-control form-control-lg" type="text" name="username"  id="username" aria-label=".form-control-lg example" 
+                   <input class="form-control form-control-lg" type="text" name="username"  id="username" aria-label=".form-control-lg example"
                    readonly required>
                 </div>
                 <br>
@@ -165,7 +165,7 @@
     <script> // js alerta
         document.addEventListener("DOMContentLoaded", function() {
             const registroForm = document.getElementById("registro-form");
-            
+
             registroForm.addEventListener("submit", function(event) {
                 event.preventDefault();
 
@@ -194,7 +194,7 @@
                 });
             });
         });
-    </script>   
+    </script>
     <script src="JS/autoname.js"></script>
     </body>
 </html>
