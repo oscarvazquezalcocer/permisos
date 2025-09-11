@@ -1,64 +1,55 @@
 <?php
 
-header("Cache-Control: no-cache, no-store, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0");
+$username = $_POST["username"] ?? "";
+$password = $_POST["password"] ?? "";
 
-
-include_once 'Db.php';
-
-if (isset($_POST)) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Selecciona el password_hash, el Rol_ID y el id correspondientes al nombre de usuario dado
-    $query = "SELECT password_hash, Rol_ID, area_usuario_id, id FROM usuario WHERE username = '$username'";
-    $result = $MySQLiconn->query($query);
-
-    if ($result->num_rows == 1) {
-        $row = $result->fetch_assoc();
-        $hashed_password = $row['password_hash'];
-        $rolID = $row['Rol_ID'];
-        $userID = $row['id'];
-        $area_usuario_id = $row['area_usuario_id'];
-
-        // Verifica si la contraseña ingresada coincide con el hash almacenado
-        if (password_verify($password, $hashed_password)) {
-            // Inicia la sesión y almacena el nombre de usuario, el Rol_ID y el ID de usuario en variables de sesión
-            session_start();
-            $_SESSION['username'] = $username;
-            $_SESSION['rolID'] = $rolID;
-            $_SESSION['userID'] = $userID;
-            $_SESSION['area_usuario_id'] = $area_usuario_id;
-
-            // Verifica el Rol_ID antes de redirigir a las páginas correspondientes
-            if ($rolID == 23) {
-                // Redirecciona a la página de administrador solo si el Rol_ID es 23
-                header("Location: ../ROL_AD/inicio_Ad.php?$username");
-            } elseif ($rolID == 22) {
-                // Redirecciona a la página de Jefes solo si el Rol_ID es 22
-                header("Location: ../ROL2/Inicio2.php?$username");
-            } elseif ($rolID == 24) {
-                // Redirecciona a la página de recursos humanos solo si el Rol_ID es 24
-                header("Location: ../ROL3/Inicio3.php?$username");
-            } elseif ($rolID == 21) {
-                // Redirecciona a la página de personal solo si el Rol_ID es 21
-                header("Location: ../ROL1/Inicio.php?$username");
-            } elseif ($rolID == 25) {
-                // Redirecciona a la página de inactivo solo si el Rol_ID es 25
-                header("Location: ../ROL_IN/inicio_inactivo.php?$username");
-            } else {
-                // Redirecciona a una página predeterminada en caso de un Rol_ID desconocido
-                header("Location: ../ROL1/Inicio.php?$username");
-            }
-            exit(); // Detiene la ejecución del script después de la redirección
-        } else {
-            // La contraseña ingresada no coincide con el hash almacenado
-            echo '<script>alert("Datos de Usuario Incorrectos !Intente de nuevo"); window.location.href = "../index.php";</script>';
-        }
-    } else {
-        // No se encontró ningún usuario coincidente
-        echo '<script>alert("Datos de Usuario Incorrectos !Intente de nuevo"); window.location.href = "../index.php";</script>';
-    }
+if (!$username || !$password) {
+    echo "<div style='color:red;'>Usuario o contraseña faltante</div>";
+    exit();
 }
-?>
+
+$ch = curl_init("http://192.168.9.22:8000/auth/login");
+
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt(
+    $ch,
+    CURLOPT_POSTFIELDS,
+    http_build_query([
+        "username" => $username,
+        "password" => $password,
+    ]),
+);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Content-Type: application/x-www-form-urlencoded",
+]);
+
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($response === false) {
+    echo "<div style='color:red;'>No se pudo contactar con el servidor de autenticación</div>";
+    exit();
+}
+
+// Decodificar la respuesta JSON
+$result = json_decode($response, true);
+
+if ($httpCode === 200 && isset($result["access_token"])) {
+    // Inicio de sesión exitoso
+    session_start();
+    $_SESSION["token"] = $result["access_token"];
+    $_SESSION["usuario"] = $result["user"];
+
+    header("HX-Redirect: ../panel.php");
+    exit();
+} elseif ($httpCode === 400) {
+    // Credenciales incorrectas
+    echo "<div style='color:red;'>Usuario o contraseña inválidos</div>";
+    exit();
+} else {
+    // Otro error inesperado
+    echo "<div style='color:red;'>Error del servidor: Código $httpCode</div>";
+    exit();
+}
