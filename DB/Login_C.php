@@ -8,7 +8,7 @@ if (!$username || !$password) {
     exit();
 }
 
-$ch = curl_init("http://192.168.9.22:8000/auth/login");
+$ch = curl_init("http://192.168.9.22:5001/auth/login");
 
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt(
